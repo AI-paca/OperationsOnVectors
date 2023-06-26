@@ -182,16 +182,5 @@ namespace OperationsOnVectors
                 this[i] = v2[i];
             }
         }
-        public LinkedListVector(String str)
-        {
-            len = 1;
-            start = new Node();
-            String[] parts = str.Split(' ');
-            for (int i = 0; i < parts.Length; i++)
-            {
-                AppendEnd(double.Parse(parts[i])); 
-            }
-            DelStart();
-        }
     }
 }   
