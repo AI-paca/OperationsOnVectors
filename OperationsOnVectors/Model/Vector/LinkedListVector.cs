@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OperationsOnVectors
 {
     //class LinkListVector
     class LinkedListVector : IVectorable, IComparable, ICloneable
     {              
-        public int Length { get { return len; } } // свойство для чтения числа координат вектора
+        public int Length { get { return _len; } } // свойство для чтения числа координат вектора
         public double this[int index]// индексатор для организации доступа к элементам массива, выбрасывающий исключения при некорректном индексе;
         {
             get
             {
-                if (index < 0 || index > len)
+                if (index < 0)
                     throw new IndexOutOfRangeException();
-                Node end = start;
+                else if (index > _len)
+                    return 0;
+                Node end = _start;
                 for (int i = 0; i < index; i++)
                     end = end.nextEl;
                 return end.el;
@@ -23,106 +22,122 @@ namespace OperationsOnVectors
             set { AppendPoint(value, index); }
 
         }
+
         class Node  
         //динамический список
         { 
             internal double el = 0;//поле – элемент вещественного типа (по умолчанию = 0);
             internal Node nextEl = null;//поле – ссылка на элемент класса Node (по умолчанию = null);
         }
-        Node start;
-        int len;
+        Node _start;
+        int _len;
+
         public LinkedListVector (int n)
         // конструктор с параметром – длиной массива;
-        {   len = 1;
-            start = new Node();
-            Console.WriteLine("{0}",start.el);
-            Console.WriteLine("{0}",start.nextEl);
+        {   _len = 1;
+            _start = new Node();
+            Console.WriteLine("{0}",_start.el);
+            Console.WriteLine("{0}",_start.nextEl);
             for (int i = 0; i < n-1; i++)
                 AppendEnd(0);}
         public LinkedListVector()
         // конструктор без параметра, задающий длину списка 5;
         {
-            len = 1;
-            start = new Node();
-            Console.WriteLine("{0}", start.el);
-            Console.WriteLine("{0}", start.nextEl);
+            _len = 1;
+            _start = new Node();
+            Console.WriteLine("{0}", _start.el);
+            Console.WriteLine("{0}", _start.nextEl);
             for (int i = 0; i < 5 - 1; i++)
                 AppendEnd(0);
         }
+        public LinkedListVector(String str)
+        {
+            _len = 1;
+            _start = new Node();
+            String[] _parts = str.Split(' ');
+            for (int i = 0; i < _parts.Length; i++)
+            {
+                AppendEnd(double.Parse(_parts[i]));
+            }
+            DelStart();
+        }
+
         public double GetNorm()
         //метод получения модуля (длины, нормы) вектора ;
         {
-            double norm = 0;
-            Node end = start;
-            norm = end.el * end.el + norm;
-            do{ end = end.nextEl;
-                if (end!=null)
-                    norm = end.el * end.el + norm;
-            } while (end!=null && end.nextEl != null);
-            return Math.Sqrt(norm);
+            double _norm = 0;
+            Node _end = _start;
+            _norm = _end.el * _end.el + _norm;
+            do{ _end = _end.nextEl;
+                if (_end!=null)
+                    _norm = _end.el * _end.el + _norm;
+            } while (_end!=null && _end.nextEl != null);
+            return Math.Sqrt(_norm);
         }        
+
         public void AppendEnd(double data)
         //методы добавления элемента в конец;
-        {   Node newEnd = new Node();
-            newEnd.el = data;
-            Node end = start;
-            while ( end.nextEl != null){
-                end = end.nextEl;}
-            end.nextEl = newEnd;
-            len++; }
+        {   Node _newEnd = new Node();
+            _newEnd.el = data;
+            Node _end = _start;
+            while ( _end.nextEl != null){
+                _end = _end.nextEl;}
+            _end.nextEl = _newEnd;
+            _len++; }
         public void AppendStart(double data)
         //методы добавления элемента в начало;
-        {   Node new_start = new Node();
-            new_start.el=data;
-            new_start.nextEl = start;
-            start = new_start;
-            len++;}
-        public void DelEnd()
-        //методы удаления элемента в конец;
-        {   Node end = start;
-            while (end.nextEl != null)
-                end = end.nextEl;
-            end.nextEl = null;
-            len--; }
-        public void DelStart()
-        //методы удаления элемента в начало;
-        {   start = start.nextEl;
-            len--; }
+        {   Node _new_start = new Node();
+            _new_start.el=data;
+            _new_start.nextEl = _start;
+            _start = _new_start;
+            _len++;}
         public void AppendPoint(double data, int point)
         //методы добавления элемента в заданную позицию.
         {
             if (point <= 1)
                 AppendStart(data);
-            else if (point <= len)
+            else if (point <= _len)
             {
-                Node newPoint = new Node();
-                newPoint.el = data;
-                Node end = start;
+                Node _newPoint = new Node();
+                _newPoint.el = data;
+                Node _end = _start;
                 for (int i = 1; i < point - 1; i++)
-                    end = end.nextEl;
-                newPoint.nextEl = end.nextEl;
-                end.nextEl = newPoint;
-                len++;
+                    _end = _end.nextEl;
+                _newPoint.nextEl = _end.nextEl;
+                _end.nextEl = _newPoint;
+                _len++;
             }
             else
                 AppendEnd(data);
         }
+        public void DelEnd()
+        //методы удаления элемента в конец;
+        {   Node _end = _start;
+            while (_end.nextEl != null)
+                _end = _end.nextEl;
+            _end.nextEl = null;
+            _len--; }
+        public void DelStart()
+        //методы удаления элемента в начало;
+        {   _start = _start.nextEl;
+            _len--; }        
         public void DelPoint(int point)
         //методы удаления элемента в заданную позицию.
         {
             if (point <= 1)
                 DelStart();
-            else if (point <= len)
+            else if (point <= _len)
             {
-                Node end = start;
+                Node _end = _start;
                 for (int i = 1; i < point - 1; i++)
-                    end = end.nextEl;
-                end.nextEl = (end.nextEl).nextEl;
-                len--;
+                    _end = _end.nextEl;
+                _end.nextEl = (_end.nextEl).nextEl;
+                _len--;
             }
             else
                 DelEnd();
         }
+
         public override string ToString() //override - переопределить метод ToString(), который преобразует вектор в строку формата «<число координат вектора><пробел> <координаты вектора через пробел>»
             //public new string ToString() //создать  новой версии метода ToString() 
         {
@@ -140,9 +155,9 @@ namespace OperationsOnVectors
         public override bool Equals(object obj)//метод Equals() сравнение на равенство любой объект интерфейса IVectorable
         {
             IVectorable v1 = (IVectorable)obj;
-            if (v1.Length != len)
+            if (v1.Length != _len)
                 return false;
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < _len; i++)
             {
                 if (v1[i] != this[i])
                     return false;
@@ -152,7 +167,7 @@ namespace OperationsOnVectors
         public override int GetHashCode()
         {
             int hash = 17;//17 - простое число
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < _len; i++)
                 hash = hash * 23 + this[i].GetHashCode(); //23 - простое число
             return hash;
         }

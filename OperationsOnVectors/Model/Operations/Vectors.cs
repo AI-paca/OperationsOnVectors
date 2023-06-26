@@ -1,24 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OperationsOnVectors
 {
     class Vectors
     {
         static public IVectorable Sum(IVectorable v1, IVectorable v2)
-        //сложения двух векторов Sum;
-        {
-            if (v2.Length != v1.Length)
-                throw new FormatException();
+        //сложения двух векторов Sum
+        {           
             IVectorable v3 = new ArrayVector(Math.Max(v1.Length, v2.Length));
             for (int i = 0; i < v3.Length; i++)
                 v3[i] = v2[i] + v1[i];
             return v3;
         }
+        static public IVectorable Sub(IVectorable v1, IVectorable v2)
+        //разность двух векторов
+        {
+            IVectorable v3 = new ArrayVector(Math.Max(v1.Length, v2.Length));
+            for (int i = 0; i < v3.Length; i++)
+                v3[i] = v1[i] - v2[i];
+            return v3;
+        }
         static public double Scalar(IVectorable v1, IVectorable v2)
-        //скалярного произведения двух векторов Scalar (возвращает вещественное число);
+        //скалярное произведение двух векторов
         {
             if (v2.Length != v1.Length)
                 throw new FormatException();

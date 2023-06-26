@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace OperationsOnVectors
 {
@@ -10,14 +7,15 @@ namespace OperationsOnVectors
     {
         public int Length { get { return arr.Length; } } // свойство для чтения числа координат вектора
         public double[] arr; // поле – массив элементов целого типа (координаты вектора в пространстве);
-
         public double this[int index]
         // индексатор для организации доступа к элементам массива, выбрасывающий исключения при некорректном индексе;
         {
             get
             {
-                if (index < 0 || index >= arr.Length)
+                if (index < 0)
                     throw new IndexOutOfRangeException();
+                else if (index >= arr.Length)
+                    return 0;
                 return arr[index];
             }
             set
@@ -25,15 +23,15 @@ namespace OperationsOnVectors
                 arr[index] = value;
             }
 
-        }
-        
+        }        
+
         public double GetNorm()
         //метод получения модуля (длины, нормы) вектора ;
         {
-            double norm = 0;
+            double _norm = 0;
             for (int i = 0; i < arr.Length; i++)
-                norm = arr[i] * arr[i] + norm;
-            return Math.Sqrt(norm);
+                _norm = arr[i] * arr[i] + _norm;
+            return Math.Sqrt(_norm);
         }
 
         public ArrayVector(int n)
@@ -45,6 +43,15 @@ namespace OperationsOnVectors
         //конструктор без параметров, создающий массив из 5 элементов;
         {
             arr = new double[5];
+        }
+        public ArrayVector(string str)
+        {
+            String[] _arr_str = str.Split(' ');
+            arr = new double[_arr_str.Length];
+            for (int i = 0; i < _arr_str.Length; i++)
+            {
+                arr[i] = double.Parse(_arr_str[i]);
+            }
         }
 
         public override string ToString() //override - переопределить метод ToString(), который преобразует вектор в строку формата «<число координат вектора><пробел> <координаты вектора через пробел>»
@@ -92,17 +99,6 @@ namespace OperationsOnVectors
                 arr[i] = v2[i];
             }
         }
-        public ArrayVector(string str)
-        {
-            String[] arr_str = str.Split(' ');
-            int len = arr_str.Length;
-            arr = new double[len];
-            for (int i = 0; i < len; i++)
-            {
-                arr[i] = double.Parse(arr_str[i]);
-            }
-        }
-
     }
 }
 
